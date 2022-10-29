@@ -1,0 +1,18 @@
+{
+  "name": "simpleload",
+  "version": "1.0.0",
+  "description": "Transport CRM solution",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "liviu mitrofan",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.7.0",
+    "nodemon": "^2.0.20",
+    "stripe": "^10.15.0"
+  }
+}
