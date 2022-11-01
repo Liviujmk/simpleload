@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 //create record schema 
-var recordSchema = new Schema({
+const recordSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
@@ -34,7 +34,7 @@ var recordSchema = new Schema({
 });
 
 //export schema
-var Record = mongoose.model('Record', companySchema);
+const Record = mongoose.model('Record', recordSchema);
 module.exports = Record;
 
 

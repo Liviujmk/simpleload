@@ -8,10 +8,12 @@ var companySchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    appAuth: {
-        email: String,
-        hash: String,
-        salt: String,
+    email: String,
+    password: String,
+    hash: String,
+    salt: {
+        type: String,
+        default: "salt"
     },
     name: {
         type: String,
@@ -39,7 +41,7 @@ var companySchema = new Schema({
             phone: String,
             email: String
         },
-        currentTrucks: [{truckNr: String}],
+        currentTrucksAssigned: [{truckNr: String}],
     }],
     trucks: [{
         number:  Number,
@@ -57,7 +59,10 @@ var companySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Record',
     }],
-    currentRevenue: Number
+    currentRevenue: {
+        type: Number,
+        default: 0,
+    }
 });
 
 //export schema
