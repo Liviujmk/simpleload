@@ -1,7 +1,10 @@
-import './App.css';
 import React from 'react';
-import './index.css';
+import '../../index.css';
+import { Route, Routes, Link } from "react-router-dom"
+import Register from './register';
+import Login from './login'; 
 
+/*
 class TodoApp extends React.Component {
   constructor(props) {
     super(props);
@@ -70,6 +73,24 @@ function App() {
     <div className="App">
       <TodoApp />
     </div>
+  );
+}*/
+
+function App() {
+  return (
+    <>
+      <div className="App">
+        <h1>Simple load App</h1>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/register">Register</Link></li>
+        <li><Link to="/login">Login</Link></li>
+        <Routes>
+          <Route path="/" />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 

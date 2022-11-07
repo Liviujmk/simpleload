@@ -16,8 +16,9 @@ router.all('/*', checkAuthenticated)
 
 
 
-router.get('/', checkAuthenticated, (req, res) => {
-    res.send(
+router.get('/', checkAuthenticated, async(req, res) => {
+    const user = await Company.findOne({name: req.user.name})
+    /*res.send(
         `<h1>Dashboard</h1>
         <p>Dashboard for ${req.user.name}</p>
         <br>
@@ -27,7 +28,8 @@ router.get('/', checkAuthenticated, (req, res) => {
         <form action="/logout" method="POST">
             <input type="submit" value="Logout">
         </form>
-    `);
+    `);*/
+    res.json(user.loadSuppliers);
 });
 
 router.get('/suppliers', (req, res) => {
@@ -52,8 +54,27 @@ router.get('/suppliers', (req, res) => {
     `);
 });
 
-router.post('/suppliers', (req, res) => {
-    res.send(req.body);
+router.post('/suppliers', async(req, res) => {
+    const user = await Company.findOne({name: req.user.name});
+    const {name, country, city, street, number, zip} = req.body;
+    const supplierData = {
+        name,
+        address: {
+            country,
+            city,
+            street,
+            number,
+            zip
+        }
+    }
+    try {
+        user.loadSuppliers.push(supplierData);
+        await user.save();
+        res.redirect('/dashboard');
+    } catch (error) {
+        console.log(error);
+        res.redirect('/dashboard/suppliers');
+    }
 });
 
 module.exports = router;
