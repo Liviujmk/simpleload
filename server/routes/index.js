@@ -89,7 +89,7 @@ router.post('/register', checkNotAuthenticated, async(req, res) => {
 })
 
 router.get('/login', checkNotAuthenticated, (req, res) => {
-    res.send(`
+    /*res.send(`
     <h1>Login</h1>
     <p>Login to your account.</p>
     <br>
@@ -105,7 +105,8 @@ router.get('/login', checkNotAuthenticated, (req, res) => {
         <br>
         <br>
         <input type="submit" value="Submit">
-    `);
+    `);*/
+    res.json({message : 'Login route'});
 });
 
 router.post("/login", checkNotAuthenticated, passport.authenticate("local", {

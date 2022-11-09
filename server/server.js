@@ -8,6 +8,12 @@ const MongoStore = require('connect-mongo');
 //app urlencoded for retrieve req.body data
 app.use(express.urlencoded({extended: true}));
 
+//cors
+const cors = require('cors');
+app.use(cors({
+    origin: 'http://localhost:3000',
+}));
+
 // dotenv
 dotenv.config();
 

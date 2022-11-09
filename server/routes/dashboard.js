@@ -10,7 +10,6 @@ const {validPassword, genPassword, checkAuthenticated, checkNotAuthenticated} = 
 
 
 
-
 ///// ROUTES for DASHBOARD /////
 router.all('/*', checkAuthenticated)
 
