@@ -1,80 +1,42 @@
-import React from 'react';
-import '../../index.css';
-//import { Route, Routes, Link } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../../context/AuthProvider";
+import useToken from "../hooks/useToken";
+import axios from 'axios';
 
-import Login from '../index/login';
-
-const Supplier = (props) => (
-    <tr>
-      <td>{props.supplier.name}</td>
-      <td>{props.supplier.address.country}</td>
-      <td>{props.supplier.address.city}</td>
-      <td>{props.supplier.address.street}</td>
-      <td>{props.supplier.address.number}</td>
-      <td>{props.supplier.address.zip}</td>
-    </tr>
-);
-
-export default function SuppliersList() {
-    const [suppliers, setSuppliers] = useState([]);
+const Dashboard = () => {
+    const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
-    // This method fetches the Suppliers from the database.
-    useEffect(() => {
-        async function getSuppliers() {
-            const response = await fetch(`http://127.0.0.1:3300/dashboard/`);
 
+    //const { token, setToken } = useToken();
 
-            if (!response.ok) { 
-                const message = `An error occured: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-
-            const Suppliers = await response.json();
-            
-            setSuppliers(Suppliers);
-        }
-
-        getSuppliers();
-        return; 
-    }, [suppliers.length]);
-
-    // This method will map out the Suppliers on the table
-    function supplierList() {
-        //if(suppliers.message === "Login route")
-        return suppliers.map((supplier) => {
-            return (
-                <Supplier
-                supplier={supplier}
-                key={supplier._id}
-                />
-            );
+    const logout = async () => {
+        // if used in more components, this should be in context 
+        // axios to /logout endpoint
+        // then setAuth({}) and navigate to /login
+        await axios.get('http://127.0.0.1:3300/logout', {
+            withCredentials: true,
+            credentials: 'include'
         });
+        setAuth({});
+        navigate('/linkPage');
     }
-    // This following section will display the table with the Suppliers of individuals.
-    if(suppliers.message === "Login route") navigate("/login");
-    else {
-        return (
-            // create if statement to check if user is logged in 
-            <div>
-            <h3>Suppliers List</h3>
-            <table className="table table-striped" style={{ marginTop: 20 }}>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Country</th>
-                    <th>City</th>
-                    <th>Street</th>
-                    <th>Number</th>
-                    <th>Zip</th>
-                </tr>
-                </thead>
-                <tbody>{supplierList()}</tbody>
-            </table>
+
+    /*if(!token) {
+        return <h1>Not Logged In</h1>
+    }*/
+
+    return (
+        <section>
+            <h1>Home</h1>
+            <br />
+            <p>You are logged in!</p>
+            <br />
+            <div className="flexGrow">
+                <button onClick={logout}>Sign Out</button>
             </div>
-        );
-    }
+        </section>
+    )
 }
 
+export default Dashboard

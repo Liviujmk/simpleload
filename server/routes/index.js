@@ -11,13 +11,15 @@ const bcrypt = require("bcrypt") // Importing bcrypt package
 const passport = require("passport")
 const initializePassport = require('../middlewares/passport');
 const flash = require('express-flash');
+const jwt = require('jsonwebtoken');
+
 router.use(flash());
 
-initializePassport(
+/*initializePassport(
     passport,
     email => Company.findOne({email: email}),
     id => Company.findOne({_id: id})
-)
+)*/
 
 /* -------->>> INDEX'S ROUTES <<<---------- */
 
@@ -106,16 +108,65 @@ router.get('/login', checkNotAuthenticated, (req, res) => {
         <br>
         <input type="submit" value="Submit">
     `);*/
-    res.json({message : 'Login route'});
+    res.json({message : 'Login route', 'body' : req.body.email});
 });
 
-router.post("/login", checkNotAuthenticated, passport.authenticate("local", {
-    successRedirect: "/dashboard",
+/*router.post("/login", /*checkNotAuthenticated, passport.authenticate("local", {
+    successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true
-}));
+}) (req, res) => {
+    const {email, password} = req.body;
+    Company.findOne({
+        email
+    })
+    .then(company => {
+        if (company) {
+            bcrypt.compare(password, company.password, (err, isMatch) => {
+                if (err) throw err;
+                if (isMatch) {
+                    res.json({message : 'Login successful'});
+                } else {
+                    res.json({message : 'Invalid username or password'});
+                }
+            })
+        } else {
+            res.json({message : 'Login failed2'});
+        }
+    })
+    .catch(err => {
+        res.send('error: ' + err);
+    })
+});*/
 
-router.post("/logout", (req, res) => {
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+  
+    const userWithEmail = await Company.findOne({email}).catch(
+      (err) => {
+        console.log("Error: ", err);
+      }
+    );
+  
+    if (!userWithEmail)
+      return res
+        .status(400)
+        .json({ message: "Email or password does not match!1" });
+  
+    //if (userWithEmail.password !== password)
+    if(!bcrypt.compareSync(password, userWithEmail.password))
+      return res
+        .status(400)
+        .json({ message: "Email or password does not match!2", p1 : userWithEmail.password, p2 : password });
+  
+    const jwtToken = jwt.sign(
+      { id: userWithEmail.id, email: userWithEmail.email },
+      process.env.JWT_SECRET
+    );
+  
+    res.json({ message: "Welcome Back!", token: jwtToken, user: req.user, userWithEmail });
+});
+router.get("/logout", (req, res) => {
     req.logout(req.user, err => {
         if (err) return next(err)
         res.redirect("/")

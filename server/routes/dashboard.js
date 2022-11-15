@@ -7,16 +7,17 @@ const Record = require('../models/record');
 const jwt = require('jsonwebtoken');*/
 const dotenv = require('dotenv');
 const {validPassword, genPassword, checkAuthenticated, checkNotAuthenticated} = require('../middlewares/authFunctions');
+const passport = require('passport');
 
 
 
 ///// ROUTES for DASHBOARD /////
-router.all('/*', checkAuthenticated)
+//router.all('/*', checkAuthenticated)
 
 
 
-router.get('/', checkAuthenticated, async(req, res) => {
-    const user = await Company.findOne({name: req.user.name})
+router.get('/'/*, checkAuthenticated*/, passport.authenticate('jwt', {session: false}) , async(req, res) => {
+    const user = req.user
     /*res.send(
         `<h1>Dashboard</h1>
         <p>Dashboard for ${req.user.name}</p>

@@ -11,6 +11,10 @@ var companySchema = new Schema({
     email: String,
     password: String,
     hash: String,
+    auth: {
+        refreshToken: String,
+        accessToken: String,
+    },
     salt: {
         type: String,
         default: "salt"

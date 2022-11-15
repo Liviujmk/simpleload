@@ -1,28 +1,34 @@
+// dotenv
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const port = 3300;
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const MongoStore = require('connect-mongo');
+
+const corsOptions = require('./config/corsOptions');
+const verifyJWT = require('./middlewares/verifyJWT');
+const cookieParser = require('cookie-parser');
+const credentials = require('./middlewares/credentials');
+
+app.use(credentials)
+
+
 
 //app urlencoded for retrieve req.body data
 app.use(express.urlencoded({extended: true}));
-
+app.use(express.json())
 //cors
 const cors = require('cors');
-app.use(cors({
-    origin: 'http://localhost:3000',
-}));
+app.use(cors(corsOptions));
 
-// dotenv
-dotenv.config();
 
 // Connect to MONGODB
 require('./config/db')();
 
 // Routes auth
-const passport = require('passport');
-const session = require('express-session');
+/*const session = require('express-session');
 app.use(session({
     //secret: process.env.SECRET,
     secret: 'some secret',
@@ -37,9 +43,11 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+require('./middlewares/passport')*/
 
 //import routes
-const indexRoute = require('./routes/index');
+app.use(cookieParser());
+const indexRoute = require('./routes/indexV2');
 const dashboardRoute = require('./routes/dashboard');
 app.use('/', indexRoute);
 app.use('/dashboard', dashboardRoute);
@@ -48,6 +56,8 @@ app.use('/dashboard', dashboardRoute);
 app.get('/', (req, res) => {
     res.send({Message : 'Hello World!'});
 });
+
+app.use(verifyJWT);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
