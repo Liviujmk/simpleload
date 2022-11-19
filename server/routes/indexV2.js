@@ -6,6 +6,10 @@ const Company = require('../models/company');
 const authController = require('../controllers/authControllers');
 const logoutController = require('../controllers/logOutControllers');
 const refreshTokenController = require('../controllers/refreshTokenController');
+const registerController = require('../controllers/registerController');
+
+//register
+router.post('/register', registerController.handleNewUser);
 
 router.post('/login', authController.handleLogin);
 

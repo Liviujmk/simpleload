@@ -12,7 +12,6 @@ const verifyJWT = require('./middlewares/verifyJWT');
 const cookieParser = require('cookie-parser');
 const credentials = require('./middlewares/credentials');
 
-app.use(credentials)
 
 
 
@@ -21,6 +20,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json())
 //cors
 const cors = require('cors');
+app.use(credentials)
 app.use(cors(corsOptions));
 
 

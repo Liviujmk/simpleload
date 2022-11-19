@@ -1,12 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Company = require("../models/company");
-const bcrypt = require('bcrypt');
 
 const handleNewUser = async (req, res) => {
     const {name, email, password} = req.body;
     //const saltHash = genPassword(req.body.password);
-    const hash = await bcrypt.hash(req.body.password, 12)
+    const hash = await bcrypt.hash(password, 12)
     const companyData = {
         name,
         email,
@@ -15,7 +14,7 @@ const handleNewUser = async (req, res) => {
     }
     Company.findOne({
     //ensure companyname is unique, i.e the companyname is not already in the database
-    name
+    email
     })
     .then(company => {
         //if the companyname is unique 
