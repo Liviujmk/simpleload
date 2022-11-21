@@ -10,11 +10,13 @@ module.exports = checkAuthenticated = async (req, res, next) => {
     if (!foundUser) return res.sendStatus(403); //Forbidden
 
     // evaluate jwt 
+    let IfDecoded = false;
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
             if (err || foundUser.email !== decoded.email) return res.sendStatus(403);
+            IfDecoded = true;
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
@@ -26,7 +28,8 @@ module.exports = checkAuthenticated = async (req, res, next) => {
             );
         }
     );
-    if(jwt.verify)
-        next();
+    
+    if(IfDecoded)
+        return next();
     else res.json({'error': 'you are not authenticated'});
 }

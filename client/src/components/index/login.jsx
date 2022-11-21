@@ -2,11 +2,12 @@ import React from 'react';
 import { useRef, useState, useEffect, useContext } from 'react';
 import '../../index.css';
 
-import useAuth from '../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import axios from '../../api/axios';
 import AuthContext from '../../context/AuthProvider';
+import cookie from 'js-cookie';
 
 const Login = () => {
     //const { setAuth } = useAuth();
@@ -59,6 +60,7 @@ const Login = () => {
                 .then(res => res.json())
                 .then(data => {
                     console.log(data.accessToken);
+                    cookie.set('jwt', data.accessToken);
                     setAuth({ email, pwd, accessToken: data.accessToken });
                 })
             setEmail('');
