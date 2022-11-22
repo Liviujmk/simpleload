@@ -29,7 +29,9 @@ module.exports = checkAuthenticated = async (req, res, next) => {
         }
     );
     
-    if(IfDecoded)
+    if(IfDecoded){
+        req.user = foundUser;
         return next();
-    else res.json({'error': 'you are not authenticated'});
+    }
+    else res.json({'error': 'You are not authenticated'});
 }

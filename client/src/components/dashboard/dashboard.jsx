@@ -1,14 +1,15 @@
 import { useNavigate, Link } from "react-router-dom";
-import  React, { useContext, useState, useEffect } from "react";
+import  React, { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../../context/AuthProvider";
-import axios from '../../api/axios';
+import axios, {baseDashboardURL, baseURL} from '../../api/axios';
+import useAuth from "../../hooks/useAuth";
 
 const Dashboard = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
-
+    const { auth } = useAuth();
     //const { token, setToken } = useToken();
-
+    console.log(auth)
     const logout = async () => {
         // if used in more components, this should be in context 
         // axios to /logout endpoint
@@ -102,6 +103,31 @@ const Dashboard = () => {
             });
     }, []);
 
+    const [oneSupplier, setOneSupplier] = useState(null);
+    const getId = useRef(null);
+
+    const formatResponse = (res) => {
+        return JSON.stringify(res, null, 2);
+      }
+
+    async function getSupplierById() {
+        try{
+            const res = await fetch(`${baseDashboardURL}/suppliers/${getId.current.value}`, {
+                method: 'GET',
+                credentials: 'include',
+            });
+    
+            const data = await res.json();
+    
+            /*const result = {
+              data
+            };*/
+            console.log(data.loadSupplier.name);
+            setOneSupplier(data.loadSupplier);
+        } catch(err) {
+            setOneSupplier(err.message);    
+        }
+    }
     return (
         <section>
             <h1>Home</h1>
@@ -109,9 +135,17 @@ const Dashboard = () => {
             <p>Hi {profile?.profile?.name}! You are logged in now!</p>
             <br />
             <p>your supplier is {data?.loadSuppliers[0]?.name}</p>
+            <br />
+            <input type="text" ref={getId} value={data?.loadSuppliers[0]?.name} />
+            <button onClick={getSupplierById}>Get supplier</button>
+            <br />
             <div className="flexGrow">
                 <button onClick={logout}>Sign Out</button>
             </div>
+            <br />
+            <br />
+            <br />
+            { oneSupplier && <div className="alert alert-secondary mt-2" role="alert"><pre>{oneSupplier.name}</pre></div> }
         </section>
     )
 }

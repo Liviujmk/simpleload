@@ -13,7 +13,7 @@ const recordSchema = new Schema({
         carrierName: String,
         truckAssigned: String
     },
-    commandNr: String,
+    commandNr: {type: String, required: true, unique: true},
     commandDate: { type: Date, default: Date.now },
     creditNoteNr: String,
     creditNoteDate: { type: Date, default: Date.now },
