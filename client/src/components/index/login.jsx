@@ -10,18 +10,16 @@ import AuthContext from '../../context/AuthProvider';
 import cookie from 'js-cookie';
 
 const Login = () => {
-    //const { setAuth } = useAuth();
     const { auth, setAuth } = useContext(AuthContext);
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    if (auth?.email) {
+    if (localStorage.getItem('accessToken'))   {
         navigate('/dashboard');
     }
 
-
-
+    
     const from = location.state?.from?.pathname || "/dashboard";
 
     const userRef = useRef();
@@ -43,26 +41,23 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            /*const response = await axios.post('/login',
-                JSON.stringify({ email, pwd }),
-                {
-                  headers: { 'Content-Type': 'application/json' },      
-                  withCredentials: true,
-                  credentials: 'include'
-                }
-            );*/
             const response = await fetch('http://127.0.0.1:3300/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, pwd }),
                 credentials: 'include'
             })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data.accessToken);
-                    cookie.set('jwt', data.accessToken);
-                    setAuth({ email, pwd, accessToken: data.accessToken });
-                })
+            .then(res => res.json())
+            .then(data => {
+                //console.log(data.accessToken);
+                localStorage.setItem('accessToken', data.accessToken);
+                //cookie.set('accessToken', data.accessToken);
+                setAuth({ email, pwd, accessToken: data.accessToken });
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
             setEmail('');
             setPwd('');
             navigate(from, { replace: true });

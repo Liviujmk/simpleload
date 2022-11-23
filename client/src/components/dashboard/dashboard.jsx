@@ -8,8 +8,6 @@ const Dashboard = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const { auth } = useAuth();
-    //const { token, setToken } = useToken();
-    console.log(auth)
     const logout = async () => {
         // if used in more components, this should be in context 
         // axios to /logout endpoint
@@ -18,6 +16,7 @@ const Dashboard = () => {
             withCredentials: true,
             credentials: 'include'
         });
+        localStorage.removeItem('accessToken');
         setAuth({});
         navigate('/linkPage');
     }
@@ -117,13 +116,13 @@ const Dashboard = () => {
                 credentials: 'include',
             });
     
-            const data = await res.json();
+            const data1 = await res.json();
     
             /*const result = {
               data
             };*/
-            console.log(data.loadSupplier.name);
-            setOneSupplier(data.loadSupplier);
+            console.log(data1);
+            setOneSupplier(data1);
         } catch(err) {
             setOneSupplier(err.message);    
         }
@@ -136,7 +135,7 @@ const Dashboard = () => {
             <br />
             <p>your supplier is {data?.loadSuppliers[0]?.name}</p>
             <br />
-            <input type="text" ref={getId} value={data?.loadSuppliers[0]?.name} />
+            <input type="text" ref={getId} />
             <button onClick={getSupplierById}>Get supplier</button>
             <br />
             <div className="flexGrow">
@@ -145,7 +144,7 @@ const Dashboard = () => {
             <br />
             <br />
             <br />
-            { oneSupplier && <div className="alert alert-secondary mt-2" role="alert"><pre>{oneSupplier.name}</pre></div> }
+            { oneSupplier && <div className="alert alert-secondary mt-2" role="alert"><pre>{oneSupplier?.loadSupplier?.name || oneSupplier.message}</pre></div> }
         </section>
     )
 }
