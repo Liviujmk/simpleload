@@ -39,12 +39,11 @@ router.get('/suppliers', async (req, res) => {
 
 router.get('/suppliers/:name',  async (req, res) => {
     const foundUser = req.user;
-    if (jwt.verify)
-        if(foundUser.loadSuppliers.find(supplier => supplier.name === req.params.name)) {   
-            res.json({ loadSupplier: foundUser.loadSuppliers.find(supplier => supplier.name === req.params.name) })
-        } else {
-            res.json({ message: "No supplier with that name" })
-        }
+    if(foundUser.loadSuppliers.find(supplier => supplier.name === req.params.name)) {   
+        res.json({ loadSupplier: foundUser.loadSuppliers.find(supplier => supplier.name === req.params.name) })
+    } else {
+        res.json({ message: "No supplier with that name" })
+    }
 });
 
 router.post('/suppliers', async (req, res) => {

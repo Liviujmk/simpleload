@@ -10,7 +10,7 @@ const RequireAuth = () => {
         localStorage.removeItem('accessToken');*/
 
     return (
-        auth?.email || localStorage.getItem('accessToken')
+        (cookie.get('accessToken') )
             ? <Outlet />
             : <Navigate to="/login" state={{ from: location }} replace />
     );

@@ -3,6 +3,7 @@ import  React, { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../../context/AuthProvider";
 import axios, {baseDashboardURL, baseURL} from '../../api/axios';
 import useAuth from "../../hooks/useAuth";
+import cookie from 'js-cookie';
 
 const Dashboard = () => {
     const { setAuth } = useContext(AuthContext);
@@ -13,14 +14,15 @@ const Dashboard = () => {
         // axios to /logout endpoint
         // then setAuth({}) and navigate to /login
         await axios.get('http://127.0.0.1:3300/logout', {
-            withCredentials: true,
+            withCredentials: true,  
             credentials: 'include'
         });
         localStorage.removeItem('accessToken');
+        cookie.remove('accessToken');
         setAuth({});
         navigate('/linkPage');
     }
-
+    console.log(auth);
     /*const [data, setData] = useState([]);
     
     /*if(!token) {
@@ -76,7 +78,7 @@ const Dashboard = () => {
             })
     }, []);
 
-    useEffect(() => {
+    /*useEffect(() => {
         fetch(`http://127.0.0.1:3300/dashboard/suppliers`, {
             method: 'GET',
             credentials: 'include',
@@ -90,7 +92,9 @@ const Dashboard = () => {
                 return response.json();
             })
             .then((actualData) => {
+                
                 setData(actualData);
+                console.log(actualData.message);
                 setError(null);
             })
             .catch((err) => {
@@ -100,7 +104,7 @@ const Dashboard = () => {
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, []);*/
 
     const [oneSupplier, setOneSupplier] = useState(null);
     const getId = useRef(null);

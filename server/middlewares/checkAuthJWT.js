@@ -2,13 +2,11 @@ const Company = require('../models/company');
 const jwt = require('jsonwebtoken');
 
 module.exports = checkAuthenticated = async (req, res, next) => {
-    const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(401);
-    const refreshToken = cookies.jwt;
-
-    const foundUser = await Company.findOne ({ refreshToken });
+    const cookies = await req.cookies;
+    if ( /*!cookies.accessToken ||*/ !cookies?.jwt ) return res.json({ 'message': cookies });
+    const refreshToken = cookies.accessToken ?? cookies.jwt;
+    const foundUser = await Company.findOne ({ auth: {refreshToken} });
     if (!foundUser) return res.sendStatus(403); //Forbidden
-
     // evaluate jwt 
     let IfDecoded = false;
     jwt.verify(
@@ -28,10 +26,9 @@ module.exports = checkAuthenticated = async (req, res, next) => {
             );
         }
     );
-    
     if(IfDecoded){
         req.user = foundUser;
         return next();
     }
-    else res.json({'error': 'You are not authenticated'});
+    else return res.json({'error': 'You are not authenticated'});
 }

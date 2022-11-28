@@ -3,16 +3,19 @@ import '../../index.css';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BASE_API_URL } from '../../api/config';
-
+import cookie from 'js-cookie';
 
 function Register() {
+    const navigate = useNavigate();
+    if(cookie.get('accessToken')) 
+        navigate('/dashboard');
 
     const [form, setForm] = useState({
         name: "",
         email: "",
         password: "",
     });
-    const navigate = useNavigate();
+    const [errMsg, setErrMsg] = useState("");
 
     // These methods will update the state properties.
     function updateForm(value) {
@@ -35,13 +38,20 @@ function Register() {
             },
             body: JSON.stringify(newCompany),
         })
-            .catch(error => {
-                window.alert(error);
-                return;
-            });
-
-        setForm({ name: "", position: "", level: "" });
-        navigate("/login");
+        .then((res) => res.json())
+        .then((data) => {
+            if(!data.statusOk) {
+                setErrMsg(data.emailAlready ?? data.nameAlready ?? data.error);
+            } else {
+                console.log("Company created successfully! - ", newCompany);
+                setForm({ name: "", position: "", level: "" });
+                navigate("/login");
+            }
+        })
+        .catch(error => {
+            window.alert(error);
+            return;
+        });
     }
 
     // This following section will display the form that takes the input from the user.

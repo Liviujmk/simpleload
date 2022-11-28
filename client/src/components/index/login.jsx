@@ -15,7 +15,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    if (localStorage.getItem('accessToken'))   {
+    if (cookie.get('accessToken'))   {
         navigate('/dashboard');
     }
 
@@ -51,8 +51,9 @@ const Login = () => {
             .then(data => {
                 //console.log(data.accessToken);
                 localStorage.setItem('accessToken', data.accessToken);
-                //cookie.set('accessToken', data.accessToken);
+                cookie.set('accessToken', data.accessToken, { expires: 1, secure: true });
                 setAuth({ email, pwd, accessToken: data.accessToken });
+                console.log(auth);
             })
             .catch(err => {
                 console.log(err);
@@ -65,7 +66,7 @@ const Login = () => {
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 400) {
-                setErrMsg('Missing Username or Password');
+                setErrMsg('Missing email or Password');
             } else if (err.response?.status === 401) {
                 setErrMsg('Unauthorizeeeed');
             } else {
@@ -81,10 +82,10 @@ const Login = () => {
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
             <h1>Sign In</h1>
             <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
+                <label htmlFor="email">Email:</label>
                 <input
                     type="text"
-                    id="username"
+                    id="email"
                     ref={userRef}
                     autoComplete="off"
                     onChange={(e) => setEmail(e.target.value)}

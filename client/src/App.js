@@ -7,6 +7,7 @@ import Dashboard from './components/dashboard/dashboard';
 import RequireAuth from './components/RequireAuth';
 
 import Layout from './components/layouts/layout';
+import PageNotFound from './components/layouts/404';
 import LinkPage from './components/index/linkPage';
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="editor" element={<h1>EDITOR</h1>} />
             </Route>
-            <Route path="*" element={<h1>404: Not Found</h1>} />
+            <Route path="*" element={<PageNotFound />} />
           <Route />
         </Routes>
       </div>
