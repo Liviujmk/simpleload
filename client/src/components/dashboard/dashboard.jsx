@@ -22,37 +22,6 @@ const Dashboard = () => {
         setAuth({});
         navigate('/linkPage');
     }
-    console.log(auth);
-    /*const [data, setData] = useState([]);
-    
-    /*if(!token) {
-        return <h1>Not Logged In</h1>
-    }
-    useEffect(() => {
-        const getData = async () => {
-            const response1 = await axios.get('/dashboard', {
-                withCredentials: true,
-                credentials: 'include'
-            }).then(response => {
-                setData(response.data);
-            });
-            console.log(data);
-        }
-        getData();
-    }, [data.length]);
-
-
-    return (
-        <section>
-            <h1>Home</h1>
-            <br />
-            <p>Hi {}! You are logged in now!</p>
-            <br />
-            <div className="flexGrow">
-                <button onClick={logout}>Sign Out</button>
-            </div>
-        </section>
-    )*/
 
     const [data, setData] = useState(null);
     const [profile, setProfile] = useState(null);
@@ -77,34 +46,6 @@ const Dashboard = () => {
                 setError(null);
             })
     }, []);
-
-    /*useEffect(() => {
-        fetch(`http://127.0.0.1:3300/dashboard/suppliers`, {
-            method: 'GET',
-            credentials: 'include',
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(
-                        `This is an HTTP error: The status is ${response.status}`
-                    );
-                }
-                return response.json();
-            })
-            .then((actualData) => {
-                
-                setData(actualData);
-                console.log(actualData.message);
-                setError(null);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setData(null);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, []);*/
 
     const [oneSupplier, setOneSupplier] = useState(null);
     const getId = useRef(null);

@@ -62,7 +62,7 @@ router.post('/suppliers', async (req, res) => {
     try {
         foundUser.loadSuppliers.push(supplierData);
         await foundUser.save();
-        res.json({ loadSuppliers: foundUser.loadSuppliers });
+        res.json({ message: "Supplier created" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Server error' });
@@ -85,6 +85,7 @@ router.put('/suppliers/:name', async (req, res) => {
             }
         })
         await foundUser.save();
+        res.json({ message: "Supplier updated" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })
@@ -101,6 +102,7 @@ router.delete('/suppliers/:name', async (req, res) => {
             }
         })
         await foundUser.save();
+        res.json({ message: "Supplier deleted" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })

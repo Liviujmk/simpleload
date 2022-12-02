@@ -4,6 +4,7 @@ import { Route, Routes} from "react-router-dom"
 import Register from './components/index/register';
 import Login from './components/index/login'; 
 import Dashboard from './components/dashboard/dashboard';
+import Suppliers from './components/dashboard/supplier';
 import RequireAuth from './components/RequireAuth';
 
 import Layout from './components/layouts/layout';
@@ -22,6 +23,7 @@ function App() {
             <Route element={<RequireAuth />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="editor" element={<h1>EDITOR</h1>} />
+              <Route path="suppliers" element={<Suppliers />} />
             </Route>
             <Route path="*" element={<PageNotFound />} />
           <Route />
