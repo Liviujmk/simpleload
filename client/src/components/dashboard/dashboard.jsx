@@ -46,50 +46,12 @@ const Dashboard = () => {
                 setError(null);
             })
     }, []);
-
-    const [oneSupplier, setOneSupplier] = useState(null);
-    const getId = useRef(null);
-
-    const formatResponse = (res) => {
-        return JSON.stringify(res, null, 2);
-      }
-
-    async function getSupplierById() {
-        try{
-            const res = await fetch(`${baseDashboardURL}/suppliers/${getId.current.value}`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-    
-            const data1 = await res.json();
-    
-            /*const result = {
-              data
-            };*/
-            console.log(data1);
-            setOneSupplier(data1);
-        } catch(err) {
-            setOneSupplier(err.message);    
-        }
-    }
     return (
         <section>
             <h1>Home</h1>
             <br />
-            <p>Hi {profile?.profile?.name}! You are logged in now!</p>
+            <h2>Hi {profile?.profile?.name}! You are logged in now!</h2>
             <br />
-            <p>your supplier is {data?.loadSuppliers[0]?.name}</p>
-            <br />
-            <input type="text" ref={getId} />
-            <button onClick={getSupplierById}>Get supplier</button>
-            <br />
-            <div className="flexGrow">
-                <button onClick={logout}>Sign Out</button>
-            </div>
-            <br />
-            <br />
-            <br />
-            { oneSupplier && <div className="alert alert-secondary mt-2" role="alert"><pre>{oneSupplier?.loadSupplier?.name || oneSupplier.message}</pre></div> }
         </section>
     )
 }

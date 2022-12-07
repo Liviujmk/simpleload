@@ -32,7 +32,10 @@ var companySchema = new Schema({
         zip:  String
     },
     loadSuppliers: [{
-        name: String,
+        name: {
+            type: String,
+            required: true,
+        },
         address: {
             country:  String,
             city:  String,
@@ -48,7 +51,10 @@ var companySchema = new Schema({
         currentTrucksAssigned: [{truckNr: String}],
     }],
     trucks: [{
-        number:  Number,
+        number:  {
+            type: String,
+            required: true,
+        },
         brand:  String,
         model:  String,
         year:  Number,
@@ -56,7 +62,10 @@ var companySchema = new Schema({
         currentLoadSupplier:  String
     }],
     drivers: [{ 
-        name: String,
+        name: {
+            type: String,
+            required: true,
+        },
         currentTruck:  String,
     }],
     records: [{

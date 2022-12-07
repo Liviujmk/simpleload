@@ -135,6 +135,7 @@ router.post('/trucks', async (req, res) => {
     try {
         foundUser.trucks.push(newTruck);
         await foundUser.save();
+        res.json({ message: "Truck created" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })
@@ -173,11 +174,12 @@ router.delete('/trucks/:number', async (req, res) => {
     try {
         foundUser.trucks = foundUser.trucks.forEach(truck => {
             if (truck.number === req.params.number) {
-                foundUser.trucks.splice(truck, 1)
+                truck.remove();
             }
         })
 
         await foundUser.save();
+        res.json({ message: "Truck deleted" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })
@@ -206,6 +208,7 @@ router.post('/drivers', async (req, res) => {
     try {
         foundUser.drivers.push(newDriver);
         await foundUser.save();
+        res.json({ message: "Driver created" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })
@@ -222,6 +225,7 @@ router.put('/drivers/:name', async (req, res) => {
             if (driver.name === req.params.name) {
                 driver.currentTruck = newDriver.currentTruck
                 await foundUser.save();
+                res.json({ message: "Driver updated" });
             } else {
                 res.json({ error: 'Driver not found' })
             }
@@ -238,6 +242,7 @@ router.delete('/drivers/:name', async (req, res) => {
     try {
         foundUser.drivers.splice(foundDriver, 1)
         await foundUser.save();
+        res.json({ message: "Driver deleted" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })
@@ -268,6 +273,7 @@ router.post('/records', async (req, res) => {
         await record.save();
         foundUser.records.push(record._id);
         await foundUser.save();
+        res.json({ message: "Record created" });
     }
     catch (error) {
         console.log(error);
@@ -295,6 +301,7 @@ router.put('/records/:id', async (req, res) => {
             foundRecord.km = km;
             foundRecord.price = price;
             await foundRecord.save();
+            res.json({ message: "Record updated" });
         } else {
             res.json({ error: "You can't edit this record" })
         }
@@ -311,6 +318,7 @@ router.delete('/records/:id', async (req, res) => {
         const foundRecord = await Record.findById(req.params.id);
         if (foundRecord.carrierName === foundUser.name) {
             await Record.findByIdAndDelete(req.params.id);
+            res.json({ message: "Record deleted" });
         } else {
             res.json({ error: "You can't delete this record" })
         }
@@ -339,6 +347,7 @@ router.put('/revenue', async (req, res) => {
     try {
         foundUser.revenue = revenue;
         await foundUser.save();
+        res.json({ message: "Revenue updated" });
     }
     catch (error) {
         console.log(error);

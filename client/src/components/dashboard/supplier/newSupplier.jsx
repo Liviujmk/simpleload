@@ -1,15 +1,11 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
-import AuthContext from "../../context/AuthProvider";
-import axios, {baseDashboardURL, baseURL} from '../../api/axios';
+import AuthContext from "../../../context/AuthProvider";
+import axios, {baseDashboardURL, baseURL} from '../../../api/axios';
 
 
-const Suppliers = () => {
+const NewSupplier = () => {
     const navigate = useNavigate();
-
-    const [oneSupplier, setOneSupplier] = useState(null);
-    const getSupplier = useRef(null);
-    const deleteSupplier = useRef(null);
 
     const [supplierForm, setSupplierForm] = useState({
         name: '',
@@ -19,22 +15,6 @@ const Suppliers = () => {
         number: '',
         zip: '',
     });
-
-    async function getSupplierById() {
-        try{
-            const res = await fetch(`${baseDashboardURL}/suppliers/${getSupplier.current.value}`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-    
-            const data1 = await res.json();
-
-            console.log(data1);
-            setOneSupplier(data1);
-        } catch(err) {
-            setOneSupplier(err.message);    
-        }
-    }
 
     const createSupplier = async (e) => {
         e.preventDefault();
@@ -59,20 +39,6 @@ const Suppliers = () => {
                 zip: '',
             });
             
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const DeleteSupplierById = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await fetch(`${baseDashboardURL}/suppliers/${deleteSupplier.current.value}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            });
-            const data = await res.json();
-            console.log(data);
         } catch (err) {
             console.log(err);
         }
@@ -142,22 +108,8 @@ const Suppliers = () => {
             </form>
             <br />
             <br />
-            <h1>Suppliers page</h1>
-            <br />
-            <input type="text" ref={getSupplier} />
-            <button onClick={getSupplierById}>Get supplier</button>
-            <br />
-            <p>{oneSupplier?.loadSupplier?.name || oneSupplier?.message}</p>
-            <br />
-            <br />
-            <br />
-            <h1>Delete Supplier </h1>
-            <br />
-            <input type="text" ref={deleteSupplier} />
-            <button onClick={DeleteSupplierById}>Delete supplier</button>
-            <br />
         </section>
     )
 }
 
-export default Suppliers;
+export default NewSupplier;
