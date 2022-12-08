@@ -12,9 +12,11 @@ const LinkPage = () => {
             <h2>Private</h2>
             <Link to="/dashboard">Dashboard</Link>
             <br />
-            <Link to="/editor">Editors Page</Link>
+            <Link to="/dashboard/suppliers">Suppliers' Page</Link>
             <br />
-            <Link to="/suppliers">Suppliers Page</Link>
+            <Link to="/dashboard/trucks">Trucks' Page</Link>
+            <br />
+            <Link to="/dashboard/drivers">Drivers' Page</Link>
         </section>
     )
 }

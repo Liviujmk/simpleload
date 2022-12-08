@@ -3,15 +3,21 @@ import './App.css';
 import { Route, Routes} from "react-router-dom"
 import Register from './components/index/register';
 import Login from './components/index/login'; 
+import RequireAuth from './components/RequireAuth';
+
 import Dashboard from './components/dashboard/dashboard';
+
 import Suppliers from './components/dashboard/supplier/suppliers';
 import NewSupplier from './components/dashboard/supplier/newSupplier';
 import OneSupplier from './components/dashboard/supplier/oneSupplier';
-import RequireAuth from './components/RequireAuth';
 
 import Trucks from './components/dashboard/truck/trucks';
 import NewTruck from './components/dashboard/truck/newTruck';
 import OneTruck from './components/dashboard/truck/oneTruck';
+
+import Drivers from './components/dashboard/driver/drivers';
+import NewDriver from './components/dashboard/driver/newDriver';
+import OneDriver from './components/dashboard/driver/oneDriver';
 
 import Layout from './components/layouts/layout';
 import PageNotFound from './components/layouts/404';
@@ -39,6 +45,11 @@ function App() {
                   <Route index element={<Trucks />} />
                   <Route path="new" element={<NewTruck />} />
                   <Route path=":number" element={<OneTruck />} />
+                </Route>
+                <Route path="drivers">
+                  <Route index element={<Drivers />} />
+                  <Route path="new" element={<NewDriver />} />
+                  <Route path=":name" element={<OneDriver />} />
                 </Route>
               </Route>
             </Route>

@@ -42,17 +42,37 @@ const Dashboard = () => {
                 return response.json();
             })
             .then((actualData) => {
-                setProfile(actualData);
+                setProfile(actualData.profile);
                 setError(null);
             })
     }, []);
     return (
-        <section>
-            <h1>Home</h1>
-            <br />
-            <h2>Hi {profile?.profile?.name}! You are logged in now!</h2>
-            <br />
-        </section>
+        <>
+            <section>
+                <h1>Home</h1>
+                <br />
+                <h2>Hi {profile?.name}! You are logged in now!</h2>
+                <br />
+                <br />
+                <h2>Profile details:</h2>
+                {
+                        <div>
+                            <p>Name: {profile?.name}</p>
+                            <p>Email: {profile?.email}</p>
+                            <p>Nr. of loadSuppliers: {profile?.loadSuppliers.length}</p>
+                            <p>Nr. of drivers: {profile?.drivers.length}</p>
+                            <p>Nr. of trucks: {profile?.trucks.length}</p>
+                            <p>Current revenue: ${profile?.currentRevenue}</p>
+                        </div>
+                }
+                <br />
+                <br />
+                <button onClick={logout}>Logout</button>
+                
+                
+                <br />
+                </section>
+        </>
     )
 }
 

@@ -272,6 +272,7 @@ router.post('/records', async (req, res) => {
         const record = await Record.create(newRecord);
         await record.save();
         foundUser.records.push(record._id);
+        foundUser.revenue += record.price;
         await foundUser.save();
         res.json({ message: "Record created" });
     }

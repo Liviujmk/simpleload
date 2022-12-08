@@ -4,7 +4,7 @@ import AuthContext from "../../../context/AuthProvider";
 import axios, {baseDashboardURL, baseURL} from '../../../api/axios';
 
 
-const NewSupplier = () => {
+const NewTruck = () => {
     const navigate = useNavigate();
 
     const [truckForm, setTruckForm] = useState({
@@ -90,4 +90,4 @@ const NewSupplier = () => {
     )
 }
 
-export default NewSupplier;
+export default NewTruck;

@@ -95,6 +95,9 @@ const Suppliers = () => {
                 </thead>
                 <tbody>{suppliersList()}</tbody>
             </table>
+            <h3>
+                    <Link to="new">Add a new supplier</Link>
+            </h3>
         </div>
     )
 }

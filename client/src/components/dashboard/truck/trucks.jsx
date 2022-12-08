@@ -96,6 +96,9 @@ const Trucks = () => {
                     </thead>
                     <tbody>{trucksList()}</tbody>
                 </table>
+                <h3>
+                    <Link to="new">Add a new truck</Link>
+                </h3>
             </div>
         </>
     )
