@@ -20,12 +20,14 @@ import NewDriver from './components/dashboard/driver/newDriver';
 import OneDriver from './components/dashboard/driver/oneDriver';
 
 import Layout from './components/layouts/layout';
+
 import PageNotFound from './components/layouts/404';
 import LinkPage from './components/index/linkPage';
 
 function App() {
   return (
     <>
+
       <div className="App">
         <Routes>
           <Route path="/" element={<Layout />} />
@@ -33,8 +35,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="linkPage" element={<LinkPage />} />
             <Route element={<RequireAuth />} >
-              <Route path="dashboard">
-                <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />}>
                 <Route path="editor" element={<h1>EDITOR</h1>} />
                 <Route path="suppliers" >
                   <Route index element={<Suppliers />} />
@@ -51,6 +52,7 @@ function App() {
                   <Route path="new" element={<NewDriver />} />
                   <Route path=":name" element={<OneDriver />} />
                 </Route>
+                <Route path="*" element={<PageNotFound />} />
               </Route>
             </Route>
             <Route path="*" element={<PageNotFound />} />

@@ -51,7 +51,7 @@ const NewDriver = () => {
                     onChange={(e) => setDriverForm({ ...driverForm, name: e.target.value })}
                 />
                 <br />
-                <label htmlFor="brand">Current Driver</label>
+                <label htmlFor="brand">Current Truck</label>
                 <input
                     type="text"
                     id="currentTruck"
