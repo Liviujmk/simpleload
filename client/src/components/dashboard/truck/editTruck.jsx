@@ -1,12 +1,11 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../../../context/AuthProvider";
 import axios, {baseDashboardURL, baseURL} from '../../../api/axios';
-import Select from 'react-select'
 
-const NewTruck = () => {
+const EditTruck = () => {
     const navigate = useNavigate();
-
+    const truckNumber = useParams().number;
     
     const [drivers, setDrivers] = useState([]);
     const [loadSuppliers, setSuppliers] = useState([]);
@@ -72,13 +71,39 @@ const NewTruck = () => {
         getSuppliers();
     }, [loadSuppliers.length]);
 
+    useEffect(() => {
+        async function getTruck() {
+            try {
+                const res = await fetch(`${baseDashboardURL}/trucks/${truckNumber}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!res.ok) { 
+                    console.log('error in fetching getTruck');
+                    return;
+                }
+                const data1 = await res.json();
+                console.log(data1);
+                setTruckForm(data1.truck);
+
+            } catch (err) {
+                setTruckForm(err.message);
+            }
+        }
+        getTruck();
+    }, [truckNumber]);
 
 
-    const createTruck = async (e) => {
+
+
+    const updateTruck = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${baseDashboardURL}/trucks`, {
-                method: 'POST',
+            const res = await fetch(`${baseDashboardURL}/trucks/${truckNumber}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -88,14 +113,6 @@ const NewTruck = () => {
             const data = await res.json();
             console.log(data);
             console.log(truckForm);
-            setTruckForm({
-                number: '',
-                brand: '',
-                model: '',
-                year: '',
-                currentDriver: '',
-                currentLoadSupplier: '',
-            });
             navigate('/dashboard/trucks');
         } catch (err) {
             console.log(err);
@@ -104,9 +121,9 @@ const NewTruck = () => {
     return (
         <>
             <section>
-                <h1>Create truck</h1>
+                <h1>Update truck: {truckNumber}</h1>
                 <br />
-                <form onSubmit={createTruck}>
+                <form onSubmit={updateTruck}>
                     <label htmlFor="number">Number</label>
                     <input
                         type="text"
@@ -144,7 +161,7 @@ const NewTruck = () => {
                     />
                     <br />
                     <label htmlFor="currentDriver">Current Driver</label>
-                    <select name="currentDriver" id="currentDriver" onChange={(e) => setTruckForm({ ...truckForm, currentDriver: e.target.value })}>
+                    <select value={truckForm.currentTruck} name="currentDriver" id="currentDriver" onChange={(e) => setTruckForm({ ...truckForm, currentDriver: e.target.value })}>
                         <option value="">Select a driver</option>
                         {drivers.map((driver) => (
                             <option value={driver.name}>{driver.name}</option>
@@ -152,14 +169,14 @@ const NewTruck = () => {
                     </select>
                     
                     <label  htmlFor="currentSupplier">Current loadSupplier</label>
-                    <select name="currentLoadSupplier" id="currentLoadSupplier" onChange={(e) => setTruckForm({ ...truckForm, currentLoadSupplier: e.target.value })}>
+                    <select value={truckForm.currentLoadSupplier} name="currentLoadSupplier" id="currentLoadSupplier" onChange={(e) => setTruckForm({ ...truckForm, currentLoadSupplier: e.target.value })}>
                         <option value="">Select a loadSupplier</option>
                         {loadSuppliers.map((loadSupplier) => (
                             <option value={loadSupplier.name}>{loadSupplier.name}</option>
                         ))}
                     </select>
                     <br />
-                    <button type="submit">Create truck</button>
+                    <button type="submit">Update truck</button>
                 </form>
                 <br />
                 <br />
@@ -168,4 +185,4 @@ const NewTruck = () => {
     )
 }
 
-export default NewTruck;
+export default EditTruck;

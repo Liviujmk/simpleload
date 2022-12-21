@@ -22,6 +22,7 @@ const Driver = (props) => {
                 >
                     Delete driver
                 </button>
+                <Link className="btn btn-link btn-main" to={`${props.driver.name}/edit`}>Edit driver</Link>
             </td>
         </tr>
     );
@@ -96,7 +97,7 @@ const Drivers = () => {
                 <br />
                 <br />
                 <h3>
-                    <Link to="new">Add a new driver</Link>
+                    <Link to="new">Add new driver</Link>
                 </h3>
             </div>
         </>

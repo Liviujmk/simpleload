@@ -26,10 +26,11 @@ const OneTruck = () => {
             {
             truck? 
                 <section>
-                    <h1>One Supplier</h1>
+                    <h1>One Truck</h1>
                     <h3>Number: {truck.number}</h3>
                     <p>Brand: {truck.brand}</p>
                     <p>Model: {truck.model}</p>
+                    <p>Load Supplier: {truck.currentLoadSupplier}</p>
                     <Link to="../">Back to trucks</Link>
                 </section>
             : <p>No truck</p>

@@ -68,9 +68,9 @@ var companySchema = new Schema({
         },
         currentTruck:  String,
     }],
-    records: [{
+    orders: [{
         type: Schema.Types.ObjectId,
-        ref: 'Record',
+        ref: 'Order',
     }],
     currentRevenue: {
         type: Number,

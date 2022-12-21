@@ -6,25 +6,46 @@ import OneSupplier from "./oneSupplier";
 
 const Supplier = (props) => {
     return (
-        <tr>
-            <td>{props.sup.name}</td>
-            <td>{props.sup.address.city}</td>
-            <td>{props.sup.address.country}</td>
-            <td>
-                <Link className="btn btn-link" to={`${props.sup.name}`} element={<OneSupplier 
-                    sup={props.sup}
-                    deleteSupplier={props.deleteSupplier}
-                    key={props.sup.name}
-                />}>View supplier's details</Link> |
-                <button className="btn btn-link"
-                    onClick={() => {
-                        props.deleteSupplier(props.sup.name);
-                    }}
-                >
-                    Delete
-                </button>
-            </td>
-        </tr>
+        <>
+            {
+                props.sup ?
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>Country</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{props.sup.name}</td>
+                                <td>{props.sup.address.city}</td>
+                                <td>{props.sup.address.country}</td>
+                                <td>
+                                    <Link className="btn btn-link" to={`${props.sup.name}`} element={<OneSupplier
+                                        sup={props.sup}
+                                        deleteSupplier={props.deleteSupplier}
+                                        key={props.sup.name}
+                                    />}>View supplier's details</Link> |
+                                    <button className="btn btn-link"
+                                        onClick={() => {
+                                            props.deleteSupplier(props.sup.name);
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
+                                    or
+                                    <Link className="btn btn-main btn-link" to={`${props.sup.name}/edit`}>Edit</Link>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    : <p>There are no suppliers</p>
+            }
+        </>
     );
 }
 
@@ -84,19 +105,9 @@ const Suppliers = () => {
     return (
         <div>
             <h1>Suppliers List</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>City</th>
-                        <th>Country</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>{suppliersList()}</tbody>
-            </table>
+            {suppliersList()}
             <h3>
-                    <Link to="new">Add a new supplier</Link>
+                <Link to="new">Add new supplier</Link>
             </h3>
         </div>
     )

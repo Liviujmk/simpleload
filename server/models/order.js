@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 //create record schema 
-const recordSchema = new Schema({
+const orderSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
@@ -13,10 +13,10 @@ const recordSchema = new Schema({
         carrierName: String,
         truckAssigned: String
     },
-    commandNr: {type: String, required: true, unique: true},
-    commandDate: { type: Date, default: Date.now },
+    nr: {type: String, required: true, unique: true},
+    commandDate: { type: String, default: Date.now },
     creditNoteNr: String,
-    creditNoteDate: { type: Date, default: Date.now },
+    creditNoteDate: { type: String, default: Date.now },
     loadings: [{
         loadCompany: String,
         loadAddress: String
@@ -34,7 +34,7 @@ const recordSchema = new Schema({
 });
 
 //export schema
-const Record = mongoose.model('Record', recordSchema);
-module.exports = Record;
+const Order = mongoose.model('Order', orderSchema);
+module.exports = Order;
 
 

@@ -391,6 +391,7 @@ th {
 }
 
 td {
+    word-break: break-all;
     padding: 15px;
     text-align: left;
     vertical-align: middle;

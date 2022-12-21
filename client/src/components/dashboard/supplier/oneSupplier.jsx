@@ -32,6 +32,10 @@ const OneSupplier = () => {
                     <p>Street: {supplier.address.street}</p>
                     <p>Nr: {supplier.address.number}</p>
                     <p>ZIP: {supplier.address.zip}</p>
+                    <h4>Assigned trucks</h4>
+                    <ul>
+                        {supplier.currentTrucksAssigned.map(truck => <li key={truck.truckNr}>{truck.truckNr}</li>)}
+                    </ul>
                     <Link to="../">Back to Suppliers</Link>
                 </section>
             : <p>No supplier</p>

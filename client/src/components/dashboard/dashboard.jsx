@@ -50,31 +50,9 @@ const Dashboard = () => {
     }, []);
     return (
         <>
-            <Sidebar user={profile?.name}/>
+            <Sidebar user={profile?.name} logout={logout}/>
             <main class="dash">
                 <div class="container">
-                    <div class="cont-element">
-                        <h1>Welcome back, {profile?.email}!</h1>
-                    </div>
-                    <section>
-                        <h2>Profile details:</h2>
-                        {
-                            <div>
-                                <p>Name: {profile?.name}</p>
-                                <p>Email: {profile?.email}</p>
-                                <p>Nr. of loadSuppliers: {profile?.loadSuppliers.length}</p>
-                                <p>Nr. of drivers: {profile?.drivers.length}</p>
-                                <p>Nr. of trucks: {profile?.trucks.length}</p>
-                                <p>Current revenue: ${profile?.currentRevenue}</p>
-                            </div>
-                        }
-                        <br />
-                        <br />
-                        <button onClick={logout}>Logout</button>
-
-
-                        <br />
-                    </section>
                     <Outlet />
                 </div>
             </main>

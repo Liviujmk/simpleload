@@ -27,8 +27,8 @@ const OneDriver = () => {
             driver? 
                 <section>
                     <h1>One Driver</h1>
-                    <h3>Number: {driver.name}</h3>
-                    <p>Brand: {driver.currentTruck}</p>
+                    <h3>Name: {driver.name}</h3>
+                    <h3>Current Truck: {driver.currentTruck}</h3>
                     <Link to="../">Back to drivers</Link>
                 </section>
             : <p>No driver yet</p>

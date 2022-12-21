@@ -22,20 +22,30 @@ const Sidebar = (props) => {
                                 <NavLink to="/dashboard"
                                 >
                                     {(isActive) => (
-                                        <li className={window.location.pathname ==="/dashboard" ? 'sid-icon-button btn-default active-nav': 'sid-icon-button btn-default' }>
+                                        <li className={(window.location.pathname === "/dashboard" || window.location.pathname === "/dashboard/") ? 'sid-icon-button btn-default active-nav': 'sid-icon-button btn-default' }>
                                             <span class="material-symbols-rounded">dashboard</span>
                                             <span class="btn-caption">Dashboard</span>
                                         </li>
 
                                     )}
                                 </NavLink>
-                                <NavLink to="/dashboard/records"
+                                <NavLink to="/dashboard/suppliers"
+                                    className={({ isActive }) => (isActive ? "active-nav" : "")}
+                                >
+                                    {({ isActive }) => (
+                                        <li class="sid-icon-button btn-default">
+                                            <span class="material-symbols-rounded">warehouse</span>
+                                            <span class="btn-caption">Suppliers</span>
+                                        </li>
+                                    )}
+                                </NavLink>
+                                <NavLink to="/dashboard/orders"
                                     className={({ isActive }) => (isActive ? "active-nav" : "")}
                                 >
                                     {({ isActive }) => (
                                         <li class="sid-icon-button btn-default">
                                             <span class="material-symbols-rounded">package</span>
-                                            <span class="btn-caption">Records</span>
+                                            <span class="btn-caption">Orders</span>
                                         </li>
                                     )}
                                 </NavLink>
@@ -72,7 +82,7 @@ const Sidebar = (props) => {
                         </div>
                         <div class="sidebar-content sidebar-grid">
                             <ul class="sidebarUL">
-                                <li class="sid-icon-button btn-default">
+                                <li class="sid-icon-button btn-default" onClick={props.logout}>
                                     <span class="material-symbols-rounded">logout</span>
                                     <span class="btn-caption">Log out</span>
                                 </li>

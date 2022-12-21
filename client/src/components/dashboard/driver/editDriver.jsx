@@ -1,14 +1,18 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../../../context/AuthProvider";
 import axios, {baseDashboardURL, baseURL} from '../../../api/axios';
 
 
-const NewDriver = () => {
+const EditDriver = () => {
     const navigate = useNavigate();
+    const nameParam  = useParams().name
 
     const [trucks, setTrucks] = useState([]);
     const [drivers, setDrivers] = useState([]);
+    const [driverForm, setDriverForm] = useState({
+        currentTruck: '',
+    });
 
     //fetch trucks
     useEffect(() => {
@@ -31,19 +35,11 @@ const NewDriver = () => {
             })
     }, []);
 
-
-
-
-    const [driverForm, setDriverForm] = useState({
-        name: '',
-        currentTruck: '',
-    });
-
-    const createDriver = async (e) => {
+    const updateDriver = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${baseDashboardURL}/drivers`, {
-                method: 'POST',
+            const res = await fetch(`${baseDashboardURL}/drivers/${nameParam}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -52,13 +48,10 @@ const NewDriver = () => {
             });
             const data = await res.json();
             console.log(data);
-            console.log(driverForm);
             setDriverForm({
-                name: '',
                 currentTruck: '',
             });
-            navigate('/dashboard/drivers');
-            
+            navigate('../'); 
         } catch (err) {
             console.log(err);
         }
@@ -67,32 +60,31 @@ const NewDriver = () => {
 
     return (
         <section>
-            <h1>Create driver</h1>
+            <h1>Update driver ~ {nameParam} ~</h1>
             <br />
-            <form onSubmit={createDriver}>
-                <label htmlFor="number">Name</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={driverForm.name}
-                    onChange={(e) => setDriverForm({ ...driverForm, name: e.target.value })}
-                />
-                <br />
+            <form onSubmit={updateDriver}>
                 <label htmlFor="brand">Current Truck</label>
                 <select
-                    id="currentTruck"  
                     name="currentTruck"
+                    id="currentTruck"
                     value={driverForm.currentTruck}
-                    onChange={(e) => setDriverForm({ ...driverForm, currentTruck: e.target.value })}
+                    onChange={(e) => {
+                        setDriverForm({
+                            ...driverForm,
+                            currentTruck: e.target.value,
+                        });
+                    }}
                 >
-                    <option value="">Select truck</option>
+                    <option value="">Select a truck</option>
                     {trucks.map((truck) => (
-                        <option value={truck.number}>{truck.number}</option>
+                        <option key={truck.number} value={truck.number}>
+                            {truck.number}
+                        </option>
                     ))}
                 </select>
+
                 <br />
-                <button type="submit">Create driver</button>
+                <button type="submit">Update driver</button>
             </form>
             <br />
             <br />
@@ -100,4 +92,4 @@ const NewDriver = () => {
     )
 }
 
-export default NewDriver;
+export default EditDriver;

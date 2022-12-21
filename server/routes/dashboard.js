@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const Company = require('../models/company');
-const Record = require('../models/record');
+const Order = require('../models/order');
 
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -48,7 +48,7 @@ router.get('/suppliers/:name',  async (req, res) => {
 
 router.post('/suppliers', async (req, res) => {
     const foundUser = req.user;
-    const { name, country, city, street, number, zip } = req.body;
+    const { name, country, city, street, number, zip, currentTrucksAssigned } = req.body;
     const supplierData = {
         name,
         address: {
@@ -56,11 +56,20 @@ router.post('/suppliers', async (req, res) => {
             city,
             street,
             number,
-            zip
-        }
+            zip,
+        },
+        currentTrucksAssigned
     }
     try {
         foundUser.loadSuppliers.push(supplierData);
+        foundUser.trucks.forEach(truck => {
+            currentTrucksAssigned.forEach(truckAssigned => {
+                if (truck.number === truckAssigned.truckNr) {
+                    truck.currentLoadSupplier = name;
+                }
+            })
+        })
+
         await foundUser.save();
         res.json({ message: "Supplier created" });
     } catch (error) {
@@ -84,6 +93,16 @@ router.put('/suppliers/:name', async (req, res) => {
                 supplier.currentTrucksAssigned = currentTrucksAssigned;
             }
         })
+        foundUser.trucks.forEach(truck => {
+            currentTrucksAssigned.forEach(truckAssigned => {
+                if (truck.number === truckAssigned.truckNr) {
+                    truck.currentLoadSupplier = name;
+                }
+                else if (truck.currentLoadSupplier === req.params.name) {
+                    truck.currentLoadSupplier = "";
+                }
+            })
+        })
         await foundUser.save();
         res.json({ message: "Supplier updated" });
     } catch (error) {
@@ -101,6 +120,12 @@ router.delete('/suppliers/:name', async (req, res) => {
                 supplier.remove();
             }
         })
+        foundUser.trucks.forEach(truck => {
+            if (truck.currentLoadSupplier == req.params.name) {
+                truck.currentLoadSupplier = "";
+            }
+        })
+
         await foundUser.save();
         res.json({ message: "Supplier deleted" });
     } catch (error) {
@@ -134,11 +159,21 @@ router.post('/trucks', async (req, res) => {
     }
     try {
         foundUser.trucks.push(newTruck);
+        foundUser.drivers.forEach(driver => {
+            if (driver.name === currentDriver) {
+                driver.currentTruck = number;
+            }
+        })
+        foundUser.loadSuppliers.forEach(supplier => {
+            if (supplier.name === currentLoadSupplier) {
+                supplier.currentTrucksAssigned.push({ truckNr: number })
+            }
+        })
         await foundUser.save();
         res.json({ message: "Truck created" });
     } catch (error) {
         console.log(error);
-        res.json({ error: error })
+        res.json({ error: 'Could not create truck' })
     }
 });
 router.put('/trucks/:number', async (req, res) => {
@@ -162,7 +197,18 @@ router.put('/trucks/:number', async (req, res) => {
                 truck.currentLoadSupplier = editTruck.currentLoadSupplier
             }
         })
+        foundUser.drivers.forEach(driver => {
+            if (driver.name === currentDriver) {
+                driver.currentTruck = number;
+            }
+        })
+        foundUser.loadSuppliers.forEach(supplier => {
+            if (supplier.name === currentLoadSupplier) {
+                supplier.currentTrucksAssigned.push({ truckNr: number })
+            }
+        })
         await foundUser.save();
+        res.json({ message: "Truck updated" });
     } catch (error) {
         console.log(error);
         res.json({ error: error })
@@ -172,9 +218,19 @@ router.put('/trucks/:number', async (req, res) => {
 router.delete('/trucks/:number', async (req, res) => {
     const foundUser = req.user;
     try {
-        foundUser.trucks = foundUser.trucks.forEach(truck => {
+        foundUser.trucks.forEach(truck => {
             if (truck.number === req.params.number) {
                 truck.remove();
+            }
+        })
+        foundUser.drivers.forEach(driver => {
+            if (driver.currentTruck === req.params.number) {
+                driver.currentTruck = '';
+            }
+        })
+        foundUser.loadSuppliers.forEach(supplier => {
+            if (supplier.currentTrucksAssigned.includes(req.params.number)) {
+                supplier.currentTrucksAssigned = supplier.currentTrucksAssigned.filter(truck => truck !== req.params.number);
             }
         })
 
@@ -207,6 +263,11 @@ router.post('/drivers', async (req, res) => {
     }
     try {
         foundUser.drivers.push(newDriver);
+        foundUser.trucks.forEach(truck => {
+            if (truck.number === currentTruck) {
+                truck.currentDriver = name
+            }
+        })
         await foundUser.save();
         res.json({ message: "Driver created" });
     } catch (error) {
@@ -217,30 +278,46 @@ router.post('/drivers', async (req, res) => {
 router.put('/drivers/:name', async (req, res) => {
     const foundUser = req.user;
     const { currentTruck } = req.body;
-    const newDriver = {
-        currentTruck
-    }
+    console.log('currentTruck', currentTruck)
     try {
-        foundUser.drivers.forEach(driver, async () => {
+        
+        foundUser.drivers.forEach(driver => {
             if (driver.name === req.params.name) {
-                driver.currentTruck = newDriver.currentTruck
-                await foundUser.save();
-                res.json({ message: "Driver updated" });
-            } else {
-                res.json({ error: 'Driver not found' })
+                foundUser.trucks.forEach(truck => {
+                    if (truck.currentDriver === req.params.name) {
+                        truck.currentDriver = ''
+                    }
+                })
+                driver.currentTruck = currentTruck
             }
         })
+        foundUser.trucks.forEach(truck => {
+            if (truck.number === currentTruck) {
+                truck.currentDriver = req.params.name
+            }
+        })
+        
+        await foundUser.save();
+        res.json({ message: "Driver updated" });
     } catch (error) {
         console.log(error);
-        res.json({ error: error })
+        res.json({ error: 'Could not update driver' })
     }
 });
 
 router.delete('/drivers/:name', async (req, res) => {
     const foundUser = req.user;
-    const foundDriver = foundUser.drivers.find(driver => driver.name === req.params.name)
     try {
-        foundUser.drivers.splice(foundDriver, 1)
+        foundUser.drivers.forEach(driver => {
+            if (driver.name === req.params.name) {
+                driver.remove();
+            }
+        })
+        foundUser.trucks.forEach(truck => {
+            if (truck.currentDriver === req.params.name) {
+                truck.currentDriver = ''
+            }
+        })
         await foundUser.save();
         res.json({ message: "Driver deleted" });
     } catch (error) {
@@ -249,84 +326,94 @@ router.delete('/drivers/:name', async (req, res) => {
     }
 });
 
-/// GET ALL RECORDS
-router.get('/records', async (req, res) => {
+/// GET ALL orderS
+router.get('/orders', async (req, res) => {
     const foundUser = req.user;
-    const recordsId = foundUser.records;
-    const records = await Record.find({ _id: { $in: recordsId } });
-    res.json({ records: records })
-});
-router.get('/records/:id', async (req, res) => {
-    const foundUser = req.user;
-    const foundRecord = await Record.findById(req.params.id);
-    res.json({ record: foundRecord })
+    const orders = await Order.find({ 'carrier.carrierName': foundUser.name });
+    res.json({ orders: orders })
 });
 
-router.post('/records', async (req, res) => {
+router.get('/orders/:id', async (req, res) => {
     const foundUser = req.user;
-    const { loadSupplier, truckAssigned, commandNr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price, } = req.body;
-    const newRecord = {
-        loadSupplier, carrierName: foundUser.name, truckAssigned, commandNr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price
+    const userOrders = await Order.find({ 'carrier.carrierName': foundUser.name });
+    const foundOrder = userOrders.find(order => order.nr == req.params.id);
+    res.json({ order: foundOrder })
+});
+
+router.post('/orders', async (req, res) => {
+    const foundUser = req.user;
+    const { loadSupplier, truckAssigned, nr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price, } = req.body;
+
+    const neworder = {
+        loadSupplier, carrier: { carrierName: foundUser.name, truckAssigned }, truckAssigned, nr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price
     }
+
     try {
-        const record = await Record.create(newRecord);
-        await record.save();
-        foundUser.records.push(record._id);
-        foundUser.revenue += record.price;
+        const order = await Order.create(neworder);
+        await order.save();
+        foundUser.orders.push(order._id);
+        await Company.findOneAndUpdate({ name: foundUser.name }, { $inc: { currentRevenue: price } });
         await foundUser.save();
-        res.json({ message: "Record created" });
+        console.log('price', price)
+        console.log('foundUser.currentRevenue', foundUser.currentRevenue)
+        res.json({ message: "order created" });
     }
     catch (error) {
         console.log(error);
-        res.json({ error: error })
+        res.json({ error: 'Could not create order' })
     }
 });
-router.put('/records/:id', async (req, res) => {
+router.put('/orders/:id', async (req, res) => {
     const foundUser = req.user;
-    const { loadSupplier, truckAssigned, commandNr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price, } = req.body;
-    const newRecord = {
-        loadSupplier, truckAssigned, commandNr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price
+    const { loadSupplier, truckAssigned, nr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price, } = req.body;
+    const neworder = {
+        loadSupplier, truckAssigned, nr, commandDate, creditNoteNr, creditNoteDate, loadings, unloadings, paymentStatus, km, price
     }
     try {
-        const foundRecord = await Record.findById(req.params.id);
-        if (foundRecord.carrierName === foundUser.name) {
-            foundRecord.loadSupplier = loadSupplier;
-            foundRecord.truckAssigned = truckAssigned;
-            foundRecord.commandNr = commandNr;
-            foundRecord.commandDate = commandDate;
-            foundRecord.creditNoteNr = creditNoteNr;
-            foundRecord.creditNoteDate = creditNoteDate;
-            foundRecord.loadings = loadings;
-            foundRecord.unloadings = unloadings;
-            foundRecord.paymentStatus = paymentStatus;
-            foundRecord.km = km;
-            foundRecord.price = price;
-            await foundRecord.save();
-            res.json({ message: "Record updated" });
+        const foundOrder = await Order.findOne({ nr: req.params.id });
+        if (foundOrder.carrier.carrierName === foundUser.name) {
+            foundOrder.loadSupplier = loadSupplier;
+            foundOrder.truckAssigned = truckAssigned;
+            foundOrder.nr = nr;
+            foundOrder.commandDate = commandDate;
+            foundOrder.creditNoteNr = creditNoteNr;
+            foundOrder.creditNoteDate = creditNoteDate;
+            foundOrder.loadings = loadings;
+            foundOrder.unloadings = unloadings;
+            foundOrder.paymentStatus = paymentStatus;
+            foundOrder.km = km;
+            foundOrder.price = price;
+            await foundOrder.save();
+            await Company.findOneAndUpdate({ name: foundUser.name }, { $inc: { currentRevenue: price } });
+            res.json({ message: "order updated" });
         } else {
-            res.json({ error: "You can't edit this record" })
+            res.json({ error: "You can't edit this order" })
         }
     }
     catch (error) {
         console.log(error);
-        res.json({ error: error })
+        res.json({ error: 'Could not edit this order' })
     }
 });
 
-router.delete('/records/:id', async (req, res) => {
+router.delete('/orders/:id', async (req, res) => {
     const foundUser = req.user;
+    const foundOrder = await Order.findOne({ nr: req.params.id });
+    console.log('foundOrder', foundOrder)
     try {
-        const foundRecord = await Record.findById(req.params.id);
-        if (foundRecord.carrierName === foundUser.name) {
-            await Record.findByIdAndDelete(req.params.id);
-            res.json({ message: "Record deleted" });
-        } else {
-            res.json({ error: "You can't delete this record" })
-        }
+        foundUser.orders.forEach(order => {
+            if (order == foundOrder.id) {
+                order.remove();
+            }
+        })
+        await foundUser.save();
+        await Order.findByIdAndDelete(foundOrder.id);
+
+        res.json({ message: "order deleted" });
     }
     catch (error) {
         console.log(error);
-        res.json({ error: error })
+        res.json({ error: 'Could not delete order' })
     }
 });
 
@@ -335,7 +422,7 @@ router.delete('/records/:id', async (req, res) => {
 router.get('/revenue', async (req, res) => {
     const foundUser = req.user;
     try {
-        res.json({ revenue: foundUser.revenue })
+        res.json({ revenue: foundUser.currentRevenue })
     }
     catch (error) {
         console.log(error);
@@ -346,7 +433,7 @@ router.put('/revenue', async (req, res) => {
     const foundUser = req.user;
     const { revenue } = req.body;
     try {
-        foundUser.revenue = revenue;
+        foundUser.currentRevenue = revenue;
         await foundUser.save();
         res.json({ message: "Revenue updated" });
     }

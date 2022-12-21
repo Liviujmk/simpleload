@@ -1,10 +1,11 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../../../context/AuthProvider";
 import axios, {baseDashboardURL, baseURL} from '../../../api/axios';
 
 
-const NewSupplier = () => {
+const EditSupplier = () => {
+    const supplierName = useParams().name;
     const navigate = useNavigate();
 
     //asign more trucks to suppliers
@@ -29,7 +30,42 @@ const NewSupplier = () => {
 
 
     //trucks list for supplier
+    
     const [supplierTrucks, setSupplierTrucks] = useState([{truckNr: ''}]);
+
+    const [supplierForm, setSupplierForm] = useState({
+        name: '',
+        country: '',
+        city: '',
+        street: '',
+        number: '',
+        zip: '',
+        currentTrucksAssigned: []
+    });
+
+    useEffect(() => {
+        async function getSupplier() {
+            const res = await fetch(`${baseDashboardURL}/suppliers/${supplierName}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            const data = await res.json();
+            setSupplierForm({
+                name: data.loadSupplier.name,
+                country: data.loadSupplier.address.country,
+                city: data.loadSupplier.address.city,
+                street: data.loadSupplier.address.street,
+                number: data.loadSupplier.address.number,
+                zip: data.loadSupplier.address.zip,
+                currentTrucksAssigned: data.loadSupplier.currentTrucksAssigned
+            });
+            setSupplierTrucks(data.loadSupplier.currentTrucksAssigned);
+        }
+        getSupplier();
+    }, [supplierName]);
 
     const addTruck = () => {
         setSupplierTrucks([...supplierTrucks, {truckNr: ''}]);
@@ -41,6 +77,8 @@ const NewSupplier = () => {
         const list = [...supplierTrucks];
         list.splice(index, 1);
         setSupplierTrucks(list);
+        setSupplierForm({...supplierForm, currentTrucksAssigned: list});
+        console.log(list)
     }
 
     const handleTruckChange = (e, index) => {
@@ -49,25 +87,17 @@ const NewSupplier = () => {
         list[index][name] = value;
         setSupplierTrucks(list);
         console.log(supplierTrucks);
-        setSupplierForm({...supplierForm, currentTrucksAssigned: supplierTrucks});
+        setSupplierForm({...supplierForm, currentTrucksAssigned: list});
     }
 
 
-    const [supplierForm, setSupplierForm] = useState({
-        name: '',
-        country: '',
-        city: '',
-        street: '',
-        number: '',
-        zip: '',
-        currentTrucksAssigned: supplierTrucks
-    });
 
-    const createSupplier = async (e) => {
+
+    const updateSupplier = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${baseDashboardURL}/suppliers`, {
-                method: 'POST',
+            const res = await fetch(`${baseDashboardURL}/suppliers/${supplierName}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -77,16 +107,6 @@ const NewSupplier = () => {
             const data = await res.json();
             console.log(data);
             console.log(supplierForm);
-            setSupplierForm({
-                name: '',
-                country: '',
-                city: '',
-                street: '',
-                number: '',
-                zip: '',
-                currentTrucksAssigned: supplierTrucks
-            });
-            setSupplierTrucks([{truckNr: ''}]);
             navigate('/dashboard/suppliers');
         } catch (err) {
             console.log(err);
@@ -96,9 +116,9 @@ const NewSupplier = () => {
 
     return (
         <section>
-            <h1>Create supplier</h1>
+            <h1>Edit supplier</h1>
             <br />
-            <form onSubmit={createSupplier}>
+            <form onSubmit={updateSupplier}>
                 <label htmlFor="name">Name</label>
                 <input
                     type="text"
@@ -168,7 +188,7 @@ const NewSupplier = () => {
                 <button type="button" onClick={addTruck}>Add</button>
                 <br />
                 <br />
-                <button type="submit">Create supplier</button>
+                <button type="submit">Update supplier</button>
             </form>
             <br />
             <br />
@@ -176,4 +196,4 @@ const NewSupplier = () => {
     )
 }
 
-export default NewSupplier;
+export default EditSupplier;

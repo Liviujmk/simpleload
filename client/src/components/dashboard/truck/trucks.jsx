@@ -5,17 +5,13 @@ import axios, { baseDashboardURL, baseURL } from '../../../api/axios';
 import OneTruck from "./oneTruck";
 
 const Truck = (props) => {
-    return (
+    return ( 
         <tr>
             <td>{props.truck.number}</td>
             <td>{props.truck.brand}</td>
             <td>{props.truck.model}</td>
             <td>
-                <Link className="btn btn-link" to={`${props.truck.number}`} element={<OneTruck 
-                    truck={props.truck}
-                    deleteTruck={props.deleteTruck}
-                    key={props.truck.number}
-                />}>View Truck's details</Link> |
+                <Link className="btn btn-link" to={`${props.truck.number}`}>View Truck's details</Link> |
                 <button className="btn btn-link"
                     onClick={() => {
                         props.deleteTruck(props.truck.number);
@@ -23,6 +19,8 @@ const Truck = (props) => {
                 >
                     Delete
                 </button>
+                or
+                <Link className="btn btn-link btn-main" to={`${props.truck.number}/edit`}>Edit</Link>
             </td>
         </tr>
     );
@@ -97,7 +95,7 @@ const Trucks = () => {
                     <tbody>{trucksList()}</tbody>
                 </table>
                 <h3>
-                    <Link to="new">Add a new truck</Link>
+                    <Link to="new">Add new truck</Link>
                 </h3>
             </div>
         </>
