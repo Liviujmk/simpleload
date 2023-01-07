@@ -2,17 +2,19 @@ import { useNavigate, Link, Route, Routes } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
 import axios, { baseDashboardURL, baseURL } from '../../../api/axios';
 
-import OneTruck from "./oneTruck";
+import Checkmark from "../../baseUI/checkmark";
 
 const Truck = (props) => {
-    return ( 
+    return (
         <tr>
+            <td className="th-check rowTable"><Checkmark selectAllRows={true}/></td>
             <td>{props.truck.number}</td>
             <td>{props.truck.brand}</td>
             <td>{props.truck.model}</td>
+            <td>{props.truck.currentDriver}</td>
             <td>
-                <Link className="btn btn-link" to={`${props.truck.number}`}>View Truck's details</Link> |
-                <button className="btn btn-link"
+                <Link className="btn btn-link" to={`${props.truck.number}`}>Manage</Link>
+                {/* <button className="btn btn-link"
                     onClick={() => {
                         props.deleteTruck(props.truck.number);
                     }}
@@ -20,7 +22,7 @@ const Truck = (props) => {
                     Delete
                 </button>
                 or
-                <Link className="btn btn-link btn-main" to={`${props.truck.number}/edit`}>Edit</Link>
+                <Link className="btn btn-link btn-main" to={`${props.truck.number}/edit`}>Edit</Link> */}
             </td>
         </tr>
     );
@@ -83,20 +85,27 @@ const Trucks = () => {
         <>
             <div>
                 <h1>Trucks List</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Number</th>
-                            <th>Brand</th>
-                            <th>Model</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>{trucksList()}</tbody>
-                </table>
-                <h3>
-                    <Link to="new">Add new truck</Link>
-                </h3>
+                <div className="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th className="th-check">
+                                    <Checkmark />
+                                </th>
+                                <th>Number</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Driver</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <div className="table-break"></div>
+                        <tbody>{trucksList()}</tbody>
+                    </table>
+                    <h3>
+                        <Link to="new">Add new truck</Link>
+                    </h3>
+                </div>
             </div>
         </>
     )

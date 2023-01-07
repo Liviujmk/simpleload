@@ -9,7 +9,7 @@ const EditDriver = () => {
     const nameParam  = useParams().name
 
     const [trucks, setTrucks] = useState([]);
-    const [drivers, setDrivers] = useState([]);
+    const [driver, setDriver] = useState([]);
     const [driverForm, setDriverForm] = useState({
         currentTruck: '',
     });
@@ -30,10 +30,45 @@ const EditDriver = () => {
             })
             .then((actualData) => {
                 // remove trucks that are already assigned to a driver
-                const trucks = actualData.trucks.filter(truck => truck.currentDriver === '');
-                setTrucks(trucks);
+                const trucks1 = actualData.trucks.filter(truck => truck.currentDriver === '');
+                setTrucks(trucks1);
+                if(trucks1.length === 0) {
+                    alert('All trucks are already assigned to drivers. Please add a new truck first.');
+
+                }
             })
     }, []);
+
+    //fetch driver
+    useEffect(() => {
+        async function getDriver() {
+            try {
+                const res = await fetch(`${baseDashboardURL}/drivers/${nameParam}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+                
+                if (!res.ok) {
+                    console.log('error in fetching getDriver');
+                    return;
+                }
+
+                const data1 = await res.json();
+
+                console.log(data1);
+                setDriver(data1.driver);
+                setDriverForm({
+                    currentTruck: data1.driver.currentTruck,
+                });
+            } catch (err) {
+                setDriver(err.message);
+            }
+        }   
+
+        getDriver();
+    }, [nameParam]);
+
+    
 
     const updateDriver = async (e) => {
         e.preventDefault();
@@ -75,7 +110,7 @@ const EditDriver = () => {
                         });
                     }}
                 >
-                    <option value="">Select a truck</option>
+                    <option value={driver.currentTruck}>{driver.currentTruck}</option>
                     {trucks.map((truck) => (
                         <option key={truck.number} value={truck.number}>
                             {truck.number}

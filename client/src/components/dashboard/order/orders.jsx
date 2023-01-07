@@ -6,42 +6,27 @@ import axios, { baseDashboardURL, baseURL } from '../../../api/axios';
 const Order = (props) => {
     return (
         <>
-            {
-                props.order ?
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Order Id</th>
-                                <th>Supplier</th>
-                                <th>Payment status</th>
-                                <th>Km</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{props.order.nr}</td>
-                                <td>{props.order.loadSupplier}</td>
-                                <td>{props.order.paymentStatus}</td>
-                                <td>{props.order.km}</td>
-                                <td>{props.order.price}</td>
-                                <td>
-                                    <Link className="btn btn-link" to={`${props.order.nr}`}>View order's details</Link> |
-                                    <button className="btn btn-link"
-                                        onClick={() => {
-                                            props.deleteOrder(props.order.nr);
-                                        }}
-                                    >
-                                        Delete
-                                    </button>
-                                    or
-                                    <Link className="btn btn-link btn-main" to={`${props.order.nr}/edit`}>Edit</Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    : <p>There are no orders</p>
+            {props.order ?
+                <tr>
+                    <td>{props.order.nr}</td>
+                    <td>{props.order.loadSupplier}</td>
+                    <td>{props.order.paymentStatus}</td>
+                    <td>{props.order.km}</td>
+                    <td>{props.order.price}</td>
+                    <td>
+                        <Link className="btn btn-link" to={`${props.order.nr}`}>View order's details</Link> |
+                        <button className="btn btn-link"
+                            onClick={() => {
+                                props.deleteOrder(props.order.nr);
+                            }}
+                        >
+                            Delete
+                        </button>
+                        or
+                        <Link className="btn btn-link btn-main" to={`${props.order.nr}/edit`}>Edit</Link>
+                    </td>
+                </tr>
+                : <p>There are no orders</p>
             }
         </>
     );
@@ -104,7 +89,22 @@ const Orders = () => {
         <>
             <div>
                 <h1>Orders List</h1>
-                {ordersList()}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Supplier</th>
+                            <th>Payment status</th>
+                            <th>Km</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {ordersList()}
+                    </tbody>
+                </table>
+                <br />
                 <h3>
                     <Link to="new">Add new order</Link>
                 </h3>

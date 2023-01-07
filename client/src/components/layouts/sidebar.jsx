@@ -1,5 +1,3 @@
-// creat 404.jsx
-
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -22,7 +20,7 @@ const Sidebar = (props) => {
                                 <NavLink to="/dashboard"
                                 >
                                     {(isActive) => (
-                                        <li className={(window.location.pathname === "/dashboard" || window.location.pathname === "/dashboard/") ? 'sid-icon-button btn-default active-nav': 'sid-icon-button btn-default' }>
+                                        <li className={(window.location.pathname === "/dashboard" || window.location.pathname === "/dashboard/") ? 'sid-icon-button btn-default active-nav' : 'sid-icon-button btn-default'}>
                                             <span class="material-symbols-rounded">dashboard</span>
                                             <span class="btn-caption">Dashboard</span>
                                         </li>
