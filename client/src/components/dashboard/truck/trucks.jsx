@@ -30,6 +30,7 @@ const Truck = (props) => {
 
 const Trucks = () => {
     const [trucks, setTrucks] = useState([]);
+    
 
     useEffect(() => {
         async function getTrucks() {
@@ -81,6 +82,28 @@ const Trucks = () => {
         });
     }
 
+    const [selectAll, setSelectAll] = useState(false);
+    const checkboxes = document.querySelectorAll('.rowTable input[type="checkbox"]');
+
+
+    function selectAllRows() {
+        console.log('selectAllRows');
+
+        
+        if (selectAll) {
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+            setSelectAll(false);
+        } else {
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = true;
+            });
+            setSelectAll(true);
+        }
+    }
+
+
     return (
         <>
             <div>
@@ -89,7 +112,7 @@ const Trucks = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th className="th-check">
+                                <th className="th-check headerRow" onClick={selectAllRows}>
                                     <Checkmark />
                                 </th>
                                 <th>Number</th>
