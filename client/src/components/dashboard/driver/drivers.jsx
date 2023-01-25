@@ -4,6 +4,8 @@ import axios, { baseDashboardURL, baseURL } from '../../../api/axios';
 
 import OneDriver from "./oneDriver";
 
+import Table from "../../baseUI/table";
+
 const Driver = (props) => {
     return (
         <tr>
@@ -17,7 +19,7 @@ const Driver = (props) => {
                 />}>View driver's details</Link> |
                 <button className="btn btn-link"
                     onClick={() => {
-                        props.deleteDriver(props.driver.name);
+                        props.deleteDriver()
                     }}
                 >
                     Delete driver

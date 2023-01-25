@@ -322,7 +322,7 @@ router.delete('/drivers/:name', async (req, res) => {
         res.json({ message: "Driver deleted" });
     } catch (error) {
         console.log(error);
-        res.json({ error: error })
+        res.json({ error: "Could not delete driver" })
     }
 });
 

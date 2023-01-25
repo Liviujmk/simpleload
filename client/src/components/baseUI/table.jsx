@@ -17,7 +17,7 @@ const Row = (props) => {
                 }
                 <td>
                     <button className="btn btn-link"
-                        onClick={() => { props.deleteObject(props.deleteKey) }}
+                        onClick={() => { props.deleteFunction(props.deleteKey) }}
                     >
                         Delete
                     </button>
@@ -28,16 +28,16 @@ const Row = (props) => {
 }
 
 const Table = (props) => {
-    const PropsArray = props.mainInfo;
+    const MainInfoArray = props.mainInfo;
+    const DeleteFunction = props.deleteObject;
+    const DeleteKey = props.deleteKey;
 
     const [selectedRows, setSelectedRows] = useState([]);
 
     const selectAllRows = () => {
-        const newSelectedRows = PropsArray.map((row) => row.id);
+        const newSelectedRows = MainInfoArray.map((row) => row.id);
         setSelectedRows(newSelectedRows);
     };
-
-
 
     return (
         <>
@@ -64,12 +64,13 @@ const Table = (props) => {
                                 <td className="th-check rowTable"><Checkmark/></td>
                             ) : null
                         }
-                        {PropsArray.map((row) => {
+                        {MainInfoArray.map((row) => {
                             return (
                                 <Row
                                     info={row}
-                                    deleteObject={props.deleteObject}
-                                    deleteKey={props.deleteKey}
+                                    deleteFunction = {() => props.deleteFunction(props.deleteKey)}
+                                    editLink = {props.editLink}
+                                    viewLink = {props.viewLink}
                                 />
                             );
                         })}
